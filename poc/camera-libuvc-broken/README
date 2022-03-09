@@ -1,0 +1,11 @@
+Packages:
+
+```
+libuvc-dev
+```
+
+Compile:
+
+```
+g++ main.c -Wall -I /usr/local/include/opencv4 -L /usr/local/lib/ -lopencv_core -lopencv_highgui -luvc -o poc
+```
