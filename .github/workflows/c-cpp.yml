@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install apt dependencies
-      run: sudo apt install libopencv-dev libboost-all-dev meson libgtest-dev
+      run: sudo apt update && sudo apt install -y libopencv-dev libboost-all-dev meson libgtest-dev
     - name: configure meson
       run: meson compile
     - name: build
