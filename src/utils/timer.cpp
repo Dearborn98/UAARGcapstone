@@ -1,7 +1,7 @@
 #include "timer.h"
 
 Timer::Timer(std::function<void()> callback, int timeout)
-    : callback(callback), timeout(timeout), running(false){};
+    : callback(callback), timeout(timeout), running(false) {}
 
 void Timer::start()
 {
