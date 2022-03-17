@@ -1,0 +1,27 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: install apt dependencies
+      run: sudo apt install libopencv-dev libboost-all-dev meson libgtest-dev
+    - name: configure meson
+      run: meson compile
+    - name: build
+      run: |
+        cd compile
+        ninja
+    - name: test
+      run: |
+        cd compile
+        ninja test
