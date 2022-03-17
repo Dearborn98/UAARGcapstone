@@ -1,6 +1,5 @@
 test_sources = [
     'sample.cpp',
-    'failSample.cpp'
 ]
 
 test_dep = [ 

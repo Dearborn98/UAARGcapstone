@@ -19,5 +19,6 @@ executable('UAARGcapstone',
            src,
            install : true,
            dependencies: dep,
+           include_directories: ['src'],
            # Boost when installed by apt provides dynamic link libs
            cpp_args: '-DBOOST_LOG_DYN_LINK')
