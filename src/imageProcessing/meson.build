@@ -1,1 +1,1 @@
-src += files('imageProcessingPipeline.cpp')
+src += files('imageProcessingPipeline.cpp', 'standardFilter.cpp', 'standardOutput.cpp')
