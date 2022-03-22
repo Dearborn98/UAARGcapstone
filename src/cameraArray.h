@@ -40,6 +40,12 @@ public:
 
     float getCameraProperty(cv::VideoCaptureProperties cameraProperty);
 
+    /**
+     * Helper function to set the resolution of the camera.
+     * This can be done using setCameraProperty as well.
+     */
+    void setResolution(int width, int height);
+
     cv::Mat getFrame(int cameraIndex);
 
     void startImageCapture();

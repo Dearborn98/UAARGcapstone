@@ -60,6 +60,11 @@ float CameraArray::getCameraProperty(cv::VideoCaptureProperties cameraProperty)
     return camera.get(cameraProperty);
 }
 
+void CameraArray::setResolution(int width, int height) {
+    setCameraProperty(cv::CAP_PROP_FRAME_WIDTH, width);
+    setCameraProperty(cv::CAP_PROP_FRAME_HEIGHT, height);
+}
+
 cv::Mat CameraArray::getFrame(int cameraIndex)
 {
     cv::Mat frame;
