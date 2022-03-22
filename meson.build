@@ -8,7 +8,7 @@ src = []
 dep = [
   dependency('opencv4'), 
   dependency('threads'),
-  dependency('boost', modules: ['log', 'lockfree'])
+  dependency('boost', modules: ['log'])
 ]
 
 subdir('src')
@@ -16,7 +16,7 @@ subdir('test')
 
 # Main Executable
 executable('UAARGcapstone',
-           src,
+           [main, src],
            install : true,
            dependencies: dep,
            include_directories: ['src'],
