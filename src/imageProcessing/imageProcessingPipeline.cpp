@@ -1,5 +1,7 @@
 #include "imageProcessingPipeline.h"
 #include "utils/common.h"
+#include "boost/log/trivial.hpp"
+#include <stdexcept>
 
 ImageProcessingPipeline::ImageProcessingPipeline(ImageQueue &queue) 
     : imageQueue(queue)
@@ -15,8 +17,29 @@ void ImageProcessingPipeline::registerOutput(unique_ptr<ImageProcessingOutput> o
 }
 
 void ImageProcessingPipeline::run() {
+
+    if (pipelineThread.joinable()) {
+        throw runtime_error("Pipeline already running.");
+    }
+    running = true;
+    pipelineThread = thread(&ImageProcessingPipeline::run_, this);
+}
+
+void ImageProcessingPipeline::stop() {
+    if (!pipelineThread.joinable()) {
+        throw runtime_error("Pipeline is not running.");
+    }
+    running = false;
+    pipelineThread.join();
+}
+
+void ImageProcessingPipeline::run_(){
     cv::Mat frame;
     for (;;) {
+        if (!running) {
+            break;
+        }
+
         if (!imageQueue.pop(&frame)) {
             sleep(1); // Hardcode sleep before polling again
             continue;
@@ -33,3 +56,4 @@ void ImageProcessingPipeline::run() {
         }
     }
 }
+
