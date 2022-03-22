@@ -1,9 +1,11 @@
 #ifndef imageProcessingPipeline_H
 #define imageProcessingPipeline_H
 
-#include <list>
+#include <vector>
+#include <atomic>
 #include <opencv2/core.hpp>
 #include <memory>
+#include <thread>
 #include "utils/common.h"
 #include <boost/lockfree/spsc_queue.hpp>
 
@@ -55,11 +57,17 @@ public:
     void registerOutput(unique_ptr<ImageProcessingOutput> outputs);
 
     void run();
+    void stop();
 
 private:
     vector<unique_ptr<ImageProcessingFilter>> filters;
     vector<unique_ptr<ImageProcessingOutput>> outputs;
     ImageQueue &imageQueue;
+    thread pipelineThread;
+
+    atomic<bool> running;
+
+    void run_();
 };
 
 #endif
