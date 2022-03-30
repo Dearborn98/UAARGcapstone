@@ -2,6 +2,8 @@
 
 #include <vector>
 #include <string>
+#include <map>
+#include <mutex>
 #include "opencv2/opencv.hpp"
 #include "opencv2/videoio.hpp"
 #include <boost/lockfree/spsc_queue.hpp>
@@ -13,6 +15,8 @@ using namespace std;
 
 /**
  * Class that manages multiple cameras and their properties.
+ * 
+ * Note that cameras are released when not selected to conserve bandwidth.
  */
 class CameraArray
 {
@@ -46,18 +50,35 @@ public:
      */
     void setResolution(int width, int height);
 
-    cv::Mat getFrame(int cameraIndex);
+    /**
+     * Gets a frame from the selected camera index.
+     */
+    cv::Mat getFrame();
 
     void startImageCapture();
 
     void stopImageCapture();
 
+    void selectCamera(uint index);
+
+    int getSelectedCamera()
+    {
+        return selectedCamera;
+    }
+
 private:
-    vector<cv::VideoCapture> cameraArray;
+    vector<string> devicePaths;
+    cv::VideoCapture camera;
     Timer timer;
 
     // Images are added here when ever capture is triggered.
-     ImageQueue &imageQueue;
+    ImageQueue &imageQueue;
 
+    int selectedCamera;
+
+    // Map containing camera properties to set for all cameras.
+    map<int, float> cameraProperties;
+    mutex cameraMutex;
+    
     void triggerImageCapture();
 };
