@@ -35,8 +35,8 @@ public:
     }
 
 private:
-    int timeout;
     std::function<void()> callback;
+    int timeout;
     std::thread timerThread;
     std::atomic<bool> running;
 };

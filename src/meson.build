@@ -1,4 +1,5 @@
-src = files('main.cpp', 'cameraArray.cpp')
+src = files('cameraArray.cpp', 'cameraController.cpp')
+main = files('main.cpp')
 
 subdir('utils')
 subdir('imageProcessing')

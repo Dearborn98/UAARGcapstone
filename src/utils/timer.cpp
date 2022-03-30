@@ -1,10 +1,14 @@
 #include "timer.h"
 
 Timer::Timer(std::function<void()> callback, int timeout)
-    : callback(callback), timeout(timeout), running(false){};
+    : callback(callback), timeout(timeout), running(false) {}
 
 void Timer::start()
 {
+    if (running || timerThread.joinable()) {
+        return;
+    }
+
     running = true;
     timerThread = std::thread([this]()
                               {
@@ -20,6 +24,9 @@ void Timer::start()
 
 void Timer::stop()
 {
+    if (!running || !timerThread.joinable()) {
+        return;
+    }
     running = false;
     timerThread.join();
 }
