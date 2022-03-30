@@ -10,10 +10,12 @@ ImageProcessingPipeline::ImageProcessingPipeline(ImageQueue &queue)
 
 void ImageProcessingPipeline::registerFilter(unique_ptr<ImageProcessingFilter> filter) {
     filters.push_back(move(filter));
+    BOOST_LOG_TRIVIAL(info) << "Added filter " << typeid(filter).name();
 }
 
 void ImageProcessingPipeline::registerOutput(unique_ptr<ImageProcessingOutput> output) {
     outputs.push_back(move(output));
+    BOOST_LOG_TRIVIAL(info) << "Added output " << typeid(output).name();
 }
 
 void ImageProcessingPipeline::run() {
