@@ -16,11 +16,6 @@ void StreamSettings::setFrameRate(int rate)
     this->framerate = to_string(rate);
 }
 
-void StreamSettings::setPacketSize(int size)
-{
-    this->bitRate = to_string(size);
-}
-
 map<int, string> cameraNameOptions = {
     {1 , "/dev/video8"},
     {2 , "/dev/video10"}
@@ -57,7 +52,7 @@ map<string, string> encodingOptions = {
 Default stream Command
 
 ffmpeg -f v4l2 -i /dev/video8 -pix_fmt yuv420p -preset ultrafast -tune zerolatency
- -vcodec libx264 -r 30 -b:v 512k -s 640x360 -f mpegts -flush_packets 0 udp://127.0.0.1:5000?pkt_size=1316 
+ -vcodec libx264 -r 30 -b:v 512k -s 640x360 -f mpegts -flush_packets 0 udp://127.0.0.1:5000
 */
 
 string appendStreamCommand(StreamSettings settings)
@@ -82,8 +77,6 @@ string appendStreamCommand(StreamSettings settings)
     str.append(settings.format);
     str.append(" -flush_packets 0 ");
     str.append(settings.address);
-    str.append("?pkt_size=");
-    str.append(settings.packetSize);
 
     return str;
 }
@@ -95,7 +88,7 @@ FILE* startStream(StreamSettings settings)
     FILE* pipe = popen(command.c_str(), "r");
     if (!pipe)
     {
-        cerr << "Failed to create pipe for stream" << endl;
+        cerr << "Failed to create a pipe for the stream" << endl;
     }
     
     return pipe;

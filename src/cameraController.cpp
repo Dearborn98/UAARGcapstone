@@ -39,10 +39,12 @@ void CameraController::stopImageCapture()
 
 void CameraController::startVideoStream()
 {
+    this->streamPipe = startStream(this->settings);
 }
 
 void CameraController::stopVideoStream()
 {
+    endStream(this->streamPipe);
 }
 
 void CameraController::selectCamera(int index)

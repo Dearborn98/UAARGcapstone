@@ -5,7 +5,7 @@
 using namespace std;
 
 /* ffmpeg -f v4l2 -i /dev/video8 -pix_fmt yuv420p -preset ultrafast -tune zerolatency
- -vcodec libx264 -r 30 -b:v 512k -s 640x360 -f mpegts -flush_packets 0 udp://127.0.0.1:5000?pkt_size=1316 */
+ -vcodec libx264 -r 30 -b:v 512k -s 640x360 -f mpegts -flush_packets 0 udp://127.0.0.1:5000 */
 
 /**
  * Class that holds all the settings for the video Stream
@@ -33,10 +33,8 @@ public:
     string frameSize = "640x360";
     string format = "mpegts";
     string address = "udp://127.0.0.1:5000";
-    string packetSize = "1316";
 
     void setFrameRate(int rate);
-    void setPacketSize(int size);
 };
 
 /**

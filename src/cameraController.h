@@ -3,6 +3,7 @@
 #include "opencv2/opencv.hpp"
 #include "imageProcessing/imageProcessingPipeline.h"
 #include "cameraArray.h"
+#include "videoStream.h"
 #include "utils/common.h"
 #include <string>
 
@@ -13,6 +14,8 @@
 class CameraController
 {
 public:
+    StreamSettings settings = StreamSettings();
+    FILE* streamPipe;
 
     /**
      * @param devicePath The string paths to the cameras.
