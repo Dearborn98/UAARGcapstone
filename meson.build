@@ -18,3 +18,20 @@ include_dir = include_directories('src')
 subdir('src')
 subdir('test')
 
+# pkg_mod = import('pkgconfig')
+# pkg_mod.generate(libraries : foolib,
+#                  version : '1.0',
+#                  name : 'libfoobar',
+#                  filebase : 'foobar',
+#                  description : 'A Library to barnicate your foos.')
+
+if get_option('enable_demo')
+  subdir('demo')
+  executable('capstone_demo',
+            [demo_src],
+            dependencies: dep,
+            include_directories: include_dir,
+            link_with: uaargcameralib,
+            # Boost when installed by apt provides dynamic link libs
+            cpp_args: cpp_args)
+endif
