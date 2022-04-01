@@ -8,17 +8,13 @@ src = []
 dep = [
   dependency('opencv4'), 
   dependency('threads'),
-  dependency('boost', modules: ['log'])
+  dependency('boost', modules: ['log', 'thread'])
 ]
+
+cpp_args = '-DBOOST_LOG_DYN_LINK'
+
+include_dir = include_directories('src')
 
 subdir('src')
 subdir('test')
 
-# Main Executable
-executable('UAARGcapstone',
-           [main, src],
-           install : true,
-           dependencies: dep,
-           include_directories: ['src'],
-           # Boost when installed by apt provides dynamic link libs
-           cpp_args: '-DBOOST_LOG_DYN_LINK')
