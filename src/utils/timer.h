@@ -34,6 +34,10 @@ public:
         timeout = timeout;
     }
 
+    bool isRunning() {
+        return running;
+    }
+
 private:
     std::function<void()> callback;
     int timeout;
