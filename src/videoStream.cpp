@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <array>
 
+#include <boost/log/trivial.hpp>
+
 using namespace std;
 
 StreamSettings::StreamSettings(string streamAddress)
@@ -57,27 +59,29 @@ ffmpeg -f v4l2 -i /dev/video8 -pix_fmt yuv420p -preset ultrafast -tune zerolaten
 
 string appendStreamCommand(StreamSettings settings)
 {
-    string str = "ffmpeg -f v4l2 -i ";
+    string str = "ffmpeg -fflags nobuffer -f v4l2 -i ";
     str.append(settings.cameraName);
-    str.append(" -pix_fmt ");
-    str.append(settings.pixelFormat);
+    // str.append(" -pix_fmt ");
+    // str.append(settings.pixelFormat);
     str.append(" -preset ");
     str.append(settings.preset);
     str.append(" -tune ");
-    str.append(settings.quatlityTuning);
+    str.append(settings.qualityTuning);
     str.append(" -vcodec ");
     str.append(settings.encodingCodec);
-    str.append(" -r ");
-    str.append(settings.framerate);
-    str.append(" -b:v ");
-    str.append(settings.bitRate);
-    str.append(" -s ");
-    str.append(settings.frameSize);
+    // str.append(" -r ");
+    // str.append(settings.framerate);
+    // str.append(" -b:v ");
+    // str.append(settings.bitRate);
+    // str.append(" -s ");
+    // str.append(settings.frameSize);
     str.append(" -f ");
     str.append(settings.format);
-    str.append(" -flush_packets 0 ");
+    // str.append(" -flush_packets 0 ");
+    str.append(" ");
     str.append(settings.address);
 
+    BOOST_LOG_TRIVIAL(info) << "Opening stream using: " << str << endl;
     return str;
 }
 

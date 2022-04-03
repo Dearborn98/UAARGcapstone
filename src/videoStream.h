@@ -14,21 +14,20 @@ using namespace std;
  */
 class StreamSettings
 {
-
-    StreamSettings();
+public:
+    StreamSettings() = default;
 
     /**
      * @brief Construct a new Stream Settings object with a specified address
-     * 
+     *
      * @param streamAddress Address that will be used for streaming Ex. udp://127.0.0.1:5000
      */
     StreamSettings(string streamAddress);
 
-public:
-    string cameraName = "/dev/video8"; 
+    string cameraName = "/dev/video8";
     string pixelFormat = "yuv420p";
     string preset = "ultrafast";
-    string quatlityTuning = "zerolatency";
+    string qualityTuning = "zerolatency";
     string encodingCodec = "libx264";
     string framerate = "30";
     string bitRate = "512k";
@@ -41,42 +40,42 @@ public:
 
 /**
  * Map to select the camera that will be streaming
- * 
+ *
  * Enter [v4l2-ctl --list-devices] in the console to find the correct camera names
  */
-map<int, string> cameraNameOptions {};
+extern map<int, string> cameraNameOptions;
 
 /**
  * Map for Pixel Format Options
- * 
+ *
  * Enter [ffmpeg -pix_fmts] in the console for more potential optionss
  */
-map<string, string> pixelFormatOptions {};
+extern map<string, string> pixelFormatOptions;
 
 /**
  * Map for selecting the preset option
- * 
+ *
  * @see https://trac.ffmpeg.org/wiki/Encode/H.264
  */
-map<string, string> presetOptions {};
+extern map<string, string> presetOptions;
 
 /**
  * Map for selecting the tuning option
- * 
+ *
  * @see https://trac.ffmpeg.org/wiki/Encode/H.264
  */
-map<string, string> tuningOptions {};
+extern map<string, string> tuningOptions;
 
 /**
  * Map for encoding option
- * 
+ *
  * Type [ffmpeg -encoders] in the console for more potential options
  */
-map<string, string> encodingOptions {};
+extern map<string, string> encodingOptions;
 
 /**
  * @brief Takes the stream setting and appends them into one console command
- * 
+ *
  * @param settings Object holding the stream settings
  * @return The full command as a string
  */
@@ -84,28 +83,27 @@ string appendStreamCommand(StreamSettings settings);
 
 /**
  * @brief Creates a thread and starts a video stream in the console using that thread
- * 
+ *
  * @param settings The object holding the stream settings
  * @return The pipe used for the stream
- * 
+ *
  * @see https://man7.org/linux/man-pages/man3/popen.3.html
  * @see https://stackoverflow.com/questions/44610978/popen-writes-output-of-command-executed-to-cout
  */
-FILE* startStream(StreamSettings settings);
-
+FILE *startStream(StreamSettings settings);
 
 /**
  * @brief Closes the pipe that is running the stream
- * 
+ *
  * @param pipe The pipe of the current stream that will be closed
  */
-void endStream(FILE* pipe);
+void endStream(FILE *pipe);
 
 /**
- * @brief Ends the stream and starts it again 
- * 
+ * @brief Ends the stream and starts it again
+ *
  * @param settings The object holding the stream settings
  * @param pipe The pipe that will be closed and reopened for the stream
  * @return The pipe used for the stream
  */
-FILE* restartStream(StreamSettings settings, FILE* pipe);
+FILE *restartStream(StreamSettings settings, FILE *pipe);
