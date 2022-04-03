@@ -41,20 +41,42 @@ public:
     /**
      * Adds a new filter stage to the processing pipeline.
      *
-     * @example
+     * Example:
+     * 
+     * @code
      * unique_ptr<ImageProcessingFilter> filter = unique_ptr<ImageProcessingFilter>(new EdgeDetectFilter());
      * pipeline.registerFilter(move(filter));
+     * @endcode
      */
     void registerFilter(unique_ptr<ImageProcessingFilter> filter);
 
     /**
+     * Clears all the filters in the pipeline.
+     */
+    void clearFilters()
+    {
+        filters.clear();
+    }
+
+    /**
      * Adds a new output location for processed matrices.
      *
-     * @example
+     * Example:
+     * 
+     * @code
      * unique_ptr<ImageProcessingOutput> output = unique_ptr<ImageProcessingOutput>(new FileSystemOutput());
      * pipeline.registerOutput(move(output));
+     * @endcode
      */
     void registerOutput(unique_ptr<ImageProcessingOutput> outputs);
+
+    /**
+     * Clears all the outputs in the pipeline.
+     */
+    void clearOutput()
+    {
+        outputs.clear();
+    }
 
     void run();
     void stop();

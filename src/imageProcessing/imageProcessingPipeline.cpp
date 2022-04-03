@@ -29,7 +29,7 @@ void ImageProcessingPipeline::run() {
 
 void ImageProcessingPipeline::stop() {
     if (!pipelineThread.joinable()) {
-        throw runtime_error("Pipeline is not running.");
+        return;
     }
     running = false;
     pipelineThread.join();
