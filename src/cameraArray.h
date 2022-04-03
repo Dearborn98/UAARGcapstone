@@ -61,9 +61,14 @@ public:
 
     void selectCamera(uint index);
 
-    int getSelectedCamera()
+    /**
+     * Close any camera open so it can be used elsewhere.
+     */
+    void deselectCamera();
+
+    string getSelectedCamera()
     {
-        return selectedCamera;
+        return devicePaths[selectedCamera];
     }
 
 private:

@@ -10,7 +10,8 @@
 
 CameraArray::CameraArray(vector<string> const devices, ImageQueue &queue)
     : devicePaths(),
-      timer(std::bind(&CameraArray::triggerImageCapture, this), 1000),
+      // TODO: Make timer delay customizable
+      timer(std::bind(&CameraArray::triggerImageCapture, this), 500),
       imageQueue(queue),
       selectedCamera(0)
 {
@@ -42,13 +43,11 @@ CameraArray::CameraArray(vector<string> const devices, ImageQueue &queue)
             BOOST_LOG_TRIVIAL(info) << "Registered camera: " << path;
         }
     }
-
-    selectCamera(0);
 }
 
 CameraArray::CameraArray(vector<int> const devices, ImageQueue &queue)
     : devicePaths(),
-      timer(std::bind(&CameraArray::triggerImageCapture, this), 1000),
+      timer(std::bind(&CameraArray::triggerImageCapture, this), 3000),
       imageQueue(queue),
       selectedCamera(0)
 {
@@ -86,15 +85,20 @@ CameraArray::CameraArray(vector<int> const devices, ImageQueue &queue)
             BOOST_LOG_TRIVIAL(info) << "Registered camera: " << path;
         }
     }
-
-    selectCamera(0);
 }
 
 void CameraArray::setCameraProperty(cv::VideoCaptureProperties cameraProperty, float value)
 {
     lock_guard<mutex> guard(cameraMutex);
+    bool cameraOpen = camera.isOpened();
+    if (!cameraOpen) {
+        camera = cv::VideoCapture(devicePaths[selectedCamera], cv::CAP_V4L2);
+    }
     camera.set(cameraProperty, value);
     cameraProperties[cameraProperty] = value;
+    if (!cameraOpen) {
+        camera.release();
+    }
 }
 
 float CameraArray::getCameraProperty(cv::VideoCaptureProperties cameraProperty)
@@ -115,27 +119,30 @@ cv::Mat CameraArray::getFrame()
 {
     lock_guard<mutex> guard(cameraMutex);
     cv::Mat frame;
-    bool result = camera.read(frame);
-    if (!result)
-    {
-        BOOST_LOG_TRIVIAL(error) << "Failed to grab a valid frame.";
-    }
+    camera.read(frame);
     return frame;
 }
 
 void CameraArray::startImageCapture()
 {
+    selectCamera(selectedCamera);
     timer.start();
 }
 
 void CameraArray::stopImageCapture()
 {
     timer.stop();
+    deselectCamera(); // Free up camera for other tasks.
 }
 
 void CameraArray::triggerImageCapture()
 {
     cv::Mat frame = getFrame();
+    if (frame.empty()) {
+        // Occurs if the camera is not yet ready. (errno 11: Resource Temp. Unavailable)
+        BOOST_LOG_TRIVIAL(warning) << "Empty frame received. Dropping.";
+        return;
+    }
     if (!imageQueue.push(frame))
     {
         BOOST_LOG_TRIVIAL(warning) << "Queue is full. Dropping Frame.";
@@ -148,15 +155,26 @@ void CameraArray::triggerImageCapture()
 
 void CameraArray::selectCamera(uint index)
 {
+    
+    // Preserve Timer State
+    bool isTimerRunning = timer.isRunning();
+    if (isTimerRunning) {
+        timer.stop();
+    }
+
     lock_guard<mutex> guard(cameraMutex);
+
     if (devicePaths.size() <= index)
     {
         string error = "Invalid camera index when selecting. Number of cameras: " + std::to_string(devicePaths.size());
         throw runtime_error(error);
     }
     selectedCamera = index;
-    camera.release();
-    camera = cv::VideoCapture(devicePaths[index]);
+    camera = cv::VideoCapture(devicePaths[index], cv::CAP_V4L2);
+
+    if (!camera.isOpened()) {
+        throw runtime_error("Failed to open camera");
+    }
 
     // Carry over previous set camera properties.
     for (auto optionPair : cameraProperties)
@@ -164,4 +182,12 @@ void CameraArray::selectCamera(uint index)
         BOOST_LOG_TRIVIAL(info) << "Reloading Property: " << optionPair.first << " : " << optionPair.second;
         camera.set(optionPair.first, optionPair.second);
     }
+
+    if (isTimerRunning) {
+        timer.start();
+    }
+}
+
+void CameraArray::deselectCamera() {
+    camera.release();
 }
