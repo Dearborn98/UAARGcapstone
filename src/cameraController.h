@@ -8,13 +8,18 @@
 #include <string>
 
 /**
+ * @example demo/main.cpp
+ * An exampled of how to use CameraController in the context of the capstone demo.
+ */
+
+/** 
  * Public API for interfacing with camera array and 
  * cotrolling video streaming and image captures.
  */
 class CameraController
 {
 public:
-    StreamSettings settings = StreamSettings();
+    StreamSettings settings;
     FILE* streamPipe;
 
     /**
@@ -56,6 +61,21 @@ public:
     void selectCamera(int index);
 
     /**
+     * Set the camera resolution for capture/streaming operations.
+     */
+    void setResolution(int width, int height);
+
+    /**
+     * Set the camera frameRate
+     */
+    void setFrameRate(int rate);
+
+    /**
+     * Set the IP address for video stream
+     */
+    void setIPAddress(string IP, string Port);
+
+    /**
      * Set Camera Property using OpenCV's backend.
      * 
      * @param prop The enum for the property to set.
@@ -73,6 +93,8 @@ public:
     /**
      * Provides access to the imaging pipeline to modify processing
      * operations dynamically.
+     * 
+     * @see ImageProcessingPipeline
      */
     ImageProcessingPipeline& getImagePipeline();
 
