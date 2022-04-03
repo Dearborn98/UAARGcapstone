@@ -1,3 +1,5 @@
+#pragma once
+
 #include <boost/lockfree/spsc_queue.hpp>
 #include <opencv2/core.hpp>
 
