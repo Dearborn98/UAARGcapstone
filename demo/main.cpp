@@ -39,6 +39,7 @@ char inputLoop()
         cout << "4. Toggle Edge Detection." << endl;
         cout << "5. Change Brightness" << endl;
         cout << "6. Select Camera" << endl;
+        cout << "7. Toggle HD Resolution" << endl;
         cout << endl;
         cout << "Input> ";
         cin >> input;
@@ -47,7 +48,7 @@ char inputLoop()
             continue;
         }
         char c = input[0];
-        if (c < '1' || c > '6')
+        if (c < '1' || c > '7')
         {
             continue;
         }
@@ -70,6 +71,20 @@ void toggleEdgeDetect()
     enabled = !enabled;
 }
 
+void toggleHD()
+{
+    static bool enabled = true;
+    if (enabled) {
+        controller.setResolution(640, 420);
+        cout << "Low Resolution" << endl;
+    }
+    else {
+        controller.setResolution(1600, 1200);
+        cout << "High Resolution" << endl;
+    }
+    enabled = !enabled;
+}
+
 void redirectLogToFile()
 {
     logging::add_file_log(keywords::file_name = "capstone.log", keywords::auto_flush = 1);
@@ -83,6 +98,7 @@ int main()
 
     redirectLogToFile();
     controller.getImagePipeline().registerOutput(make_unique<FileSystemOutput>());
+    controller.setIPAddress("192.168.88.10", "5000");
 
     for (;;)
     {
@@ -110,6 +126,9 @@ int main()
         case '6':
             index = queryValue<int>();
             controller.selectCamera(index);
+            break;
+        case '7':
+            toggleHD();
             break;
         }
     }
