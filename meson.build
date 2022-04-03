@@ -35,3 +35,12 @@ if get_option('enable_demo')
             # Boost when installed by apt provides dynamic link libs
             cpp_args: cpp_args)
 endif
+
+# Documentation
+doxygen = find_program('doxygen', required : false)
+
+if doxygen.found()
+  run_target('docs', command : [doxygen, meson.source_root() + '/Doxyfile'])
+else
+  warning('Documentation disabled without doxygen')
+endif
