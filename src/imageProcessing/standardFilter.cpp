@@ -10,6 +10,6 @@ cv::Mat EdgeDetectFilter::operator()(cv::Mat in)
     cv::GaussianBlur(img_gray, img_blur, cv::Size(3, 3), 0);
 
     cv::Mat edges;
-    cv::Canny(img_blur, edges, 100, 100, 3, false);
+    cv::Canny(img_blur, edges, 10, 20, 3, false);
     return edges;
 }
